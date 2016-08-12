@@ -314,7 +314,126 @@ Note that just like in your `lib/index.js` file, you can require other test file
 This lets us use the commands `npm start` to fire up `webpack-dev-server`, `npm build` to package everything for production, and `npm test` to execute our testing suite.
 
 
+#### Back to Loaders
 
+What sets Webpack apart from bundlers like Grunt and Gulp is that it handles other types of files the same way it handles JavaScript files. For example, if we want to use `SASS`, we need something to compile it into regular `CSS`.
+
+Webpack does this for us with the use of *loaders*. There are TONS of different loaders for everything under the sun. Check out the complete list [here](https://webpack.github.io/docs/list-of-loaders.html)
+
+First lets get SASS into our node project to begin with.
+`npm install --save-dev node-sass`  
+
+Next step is to download and install the dependencies of the Webpack loader(s) you want to use.
+
+`npm install --save-dev style-loader css-loader sass-loader`
+
+Wait, I thought we just needed a SASS loader. What's all the other stuff for?
+
+If you visit the [Sass Loader](https://github.com/jtangelder/sass-loader) page, you'll see the exact command needed (which matches what we typed above!).
+
+Then pop into `webpack.config.js` and tell it to apply these loaders anytime it sees a `.scss` file extension. Your file should now look like this:
+
+```
+// webpack.config.js
+
+const path = require('path');
+
+module.exports = {
+  entry: {
+    main: "./lib/index.js",
+    test: "mocha!./test/index.js"
+  },
+  output: {
+    path: __dirname,
+    filename: "[name].bundle.js"
+  },
+  module: {
+    loaders: [
+      { test: /\.css$/, loader: "style!css" },
+      { test: /\.scss$/, loader: "style!css!sass" }
+    ]
+  }
+}
+```
+
+**PRO TIP:** Webpack loaders run from right to left. So the last line of the loaders array says "Yo, Webpack, when you see a `.scss` file extension, run the `sass` loader, then run the `css` loader, then run the `style` loader".  
+
+In other words, Webpack needs to know that it's dealing with SASS, then it needs to transpile it and bundle it as a CSS file, and then stick those styles into the html page in a STYLE tag. Let's see this in action.  
+
+`touch lib/styles.scss`
+
+Add some SASS
+
+```
+/* lib/styles.scss */
+
+$primary-text-color: #F00;
+body {color: $primary-text-color }
+```
+
+Require this file in your `index.js`
+
+Restart your server and check it out.
+
+As an added bonus, we can tell Webpack to figure out file extensions for us. Throw this line at the end of your config file:
+
+```
+resolve: {
+  extensions: ['', '.js', '.json', '.scss', 'css']
+}
+```
+
+
+#### Babel and ES6
+
+With all of the new ES6 functionality, we need to make sure everything is compatible. Webpack and do this for us by compiling our ES6 into ES5 with a Babel-Loader.
+
+`npm install --save-dev babel-loader`
+
+Then add it into your loaders module in `webpack.config.js`. Your entire file should look like this:
+
+```
+const path = require('path');
+
+module.exports = {
+  entry: {
+    main: "./lib/index.js",
+    test: "mocha!./test/index.js"
+  },
+  output: {
+    path: __dirname,
+    filename: "[name].bundle.js"
+  },
+  module: {
+    loaders: [
+      { test: /\.js$/, exclude: '/node_modules/', loader: 'babel-loader' },
+      { test: /\.css$/, loader: "style!css" },
+      { test: /\.scss$/, loader: "style!css!sass" }
+    ]
+  },
+  resolve: {
+    extensions: ['', '.js', '.json', '.scss', '.css']
+  }
+}
+```
+
+Note that we exclude `node_modules` here. We want Webpack to process all of OUR `.js` files, but *not* the ones we didn't write ourselves.
+
+
+FOLLOW UP:
+Why the bangs in config stuff?
+Why wont webpack work if I don't install it again globally?
+Tree Shaking/Code Splitting/Chunking Resources for Deeper Dive
+Resolve Extensions?
+
+Next Steps:
+
+Images
+PreLoaders
+PlugIns
+Tree Shaking
+Chunking
+Code Splitting
 
 
 ### Resources
