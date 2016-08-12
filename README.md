@@ -96,15 +96,222 @@ This will allow us to type `webpack`, `webpack-dev-server`, and `mocha` directly
 
 #### Start A Project and Setup Webpack
 
-Next, set up a directory and initialize a new npm project.
+Next, set up a directory and start tracking changes with git.
 
 `mkdir webpack-demystified`
 `cd webpack-demystified`
 `git init`
 
-Take a minute to make your initial commit to github.
+Then kick off `npm`.
+
+`npm init`
+
+You'll be guided through the `package.json` setup wizard. Fill in the prompts as you see fit, or hit `enter` to choose the default. Keep in mind these settings can all be changed later directly in the `package.json` file.
+
+Finally, install the dependencies we know we need locally. These will be explained in a bit more detail later.
+
+`npm install --save-dev webpack webpackdev-server mocha mocha-loader chai`
+
+Before we push to github, we need to make sure we have our `.gitignore` file ready to go. Luckily, Node hooks us up with a default file that we can pull down with `curl`.
+
+While in your project directory, copy this into your terminal:
+
+`curl https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore > .gitignore`
+
+Check it out! We have a `.gitignore`.
+
+Git add. Git commit. Git push.
+
+#### Set Up The File Structure
+
+Next, time to create a file structure to hold our code. Let's create a `lib` and a `test` directory:  
+`mkdir lib test`
+
+And get some empty files ready to go:
+`touch lib/index.js test/index.js`
+
+At this point our project directory looks something similar to this:
+
+```
+.git
+lib/
+  index.js
+node_modules/
+test/
+  index.js
+.gitignore
+package.json
+README.md
+```
+
+#### Set Up the HTML file
+
+At this point we're ready to write some code, but we need to give our project a place to output our js files, in both our applicaiton and test suite, respectively.
+
+`touch index.html test.html`
+
+```
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Webpack Demystified</title>
+</head>
+<body>
+  <h1>Luke, I am your father.</h1>
+  <script src="bundle.js"></script>
+</body>
+</html>
+
+```
+
+Notice the single `<script>` tag located before the closing `</body>` tag. This is the epicenter of webpack. Any JS file we write will be bundled along with any dependencies and sent to production as `bundle.js`.
+
+Next let's set up our `test.html` file.
+
+```
+<!-- test.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Webpack Demystified Tests</title>
+</head>
+<body>
+  <script src="bundle.js"></script>
+</body>
+</html>
+```
+
+The script tag now uses the `test` bundle. Soon we will specify a `main` bundle for our `index.html` file, after this quick demo of Webpack in action.
+
+Make a new file in your `lib` directory called `alert.js`.  
+
+`touch lib/alert.js`
+
+```
+// alert.js
+
+module.exports = () => {
+  alert('WEBPACK!!!!!!!!!')
+}
+```
+
+```
+// index.js
+
+var newAlert = require('./alert')
+newAlert();
+```
+
+Now open up index.html
+
+`open index.html`
+
+....buzzkill. No alert. But this shouldn't be a surprise because we haven't actually told Webpack to bundle our stuff yet. Do that now:
+
+`webpack lib/index.js bundle.js`
+
+This tells webpack to use `lib/index.js` as its entry point, and output a file called `bundle.js` which is exactly what we tell our `html` page to look for.
+
+You'll notice we now have a `bundle.js` file in our `lib` folder. Reopen `index.html`. BAM!
+
+Also take a minute to look at the terminal output.
+
+```
+$ webpack lib/index.js bundle.js
+Hash: 65979c2d78d4ec0e2f84
+Version: webpack 1.13.1
+Time: 56ms
+    Asset     Size  Chunks             Chunk Names
+bundle.js  1.57 kB       0  [emitted]  main
+   [0] ./lib/index.js 47 bytes {0} [built]
+   [1] ./lib/alert.js 55 bytes {0} [built]
+```
+
+Even though we only told it to look into `index.js`, it's running through all of the dependencies (in this case only `alert.js`) and emitting them into 1 file, `bundle.js`.
+
+#### Time to Automate!
+
+Having to type the Webpack commands every time you want to run your app is a pain in the butt. We can write a configuration file that will run every time we spin up our browser and do all of the things for us.
+
+First lets make a quick change to our `html` files. Since we have both a main production environment and a testing environment, lets specify how webpack will output our js files accordingly.
+
+In `index.html` change the script tag to be `<script src="main.bundle.js"></script>`.
+
+Likewise, in `test.html` change the script tag to `<script src="test.bundle.js"></script>`
+
+Now make our config file:  
+
+`touch webpack.config.js`
+
+In that file, add the following:
+
+```
+const path = require('path');
+
+module.exports = {
+  entry: {
+    main: "./lib/index.js",
+    test: "mocha!./test/index.js"
+  },
+  output: {
+    path: __dirname,
+    filename: "[name].bundle.js"
+  }
+}
+```
+
+Let's take a second to talk about what all of this is. We're telling Webpack that we want two separate bundles from different `entry` points. One for our `main` application, and one for our `test` suite (which is why we also needed to change how each of our html files were looking for their appropriately bundled javascript).  
+
+The output will then determine whether it started form the main or test entry point, and output the filename accordingly.
+
+The way things are now, we still need to tell Webpack to run using the command `webpack` and then open our `index.html` file. Not a HUGE deal, but still kind of a waste of time.
+
+Luckily, there's a sweet deal called `webpack-dev-server` that we mentioned earlier. This will boot up a development server and run our configuration file and reload our changes anytime we refresh our browser. Try it out!
+
+`webpack-dev-server`
+
+Then visit `http://localhost:8080`
+
+Make a change to your alert.js file and refresh your browser.
+
+#### Writing Tests
+
+In `test/index.js`, write a simple test.
+
+```
+const assert = require('chai').assert
+
+describe('our test bundle', function () {
+  it('should work', function () {
+    assert(true)
+    })
+  })
+```
+
+Visit `http://localhost:8080/text.html`  
+
+Note that just like in your `lib/index.js` file, you can require other test files within the entry point `test/index.js` file and Webpack will bundle for you. Simply use `require('./other-test-file')` like you would in any other context.  This is important since keeping test files simple and elegant is an crucial part of writing clean code.
 
 
+#### A few changes to package.json
+`package.json` makes it easier to run commands. Let's make a few changes so we can keep our scripts straight.
+
+```
+// package.json
+...
+"scripts": {
+  "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+  "build": "./node_modules/webpack/bin/webpack.js",
+  "test": "./node_modules/mocha/bin/mocha"
+},
+...
+```
+This lets us use the commands `npm start` to fire up `webpack-dev-server`, `npm build` to package everything for production, and `npm test` to execute our testing suite.
 
 
 
