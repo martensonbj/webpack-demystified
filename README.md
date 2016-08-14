@@ -1,23 +1,45 @@
 # Webpack Demystified
 
 ### Game Plan:
-  - #### Part 1:
+  - Part 1:
     - Understand what Webpack is, and why it is useful
     - Get an overview of Loaders and Plugins
-  - #### Part 2:
+  - Part 2:
     - Build a basic Webpack file from scratch
-  - #### Part 2:
+  - Part 3:
     - Realize that Webpack is like your organized but slightly finicky butler taking care of everything for you (as long as you give them the right instructions).
 
 ### Part 1: Big Picture
 
 #### The Purpose of Build Tools
 Let's say you're building a game in JavaScript and you're new to this whole coding thing. Then let's say that your HTML file looks like this:  
-    ??? SCREENSHOT OF SHITTY HTML FILE
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Webpack Demystified</title>
+</head>
+<body>
+  <h1>Luke, I am your father.</h1>
+  <script src="bundle.js"></script>
+  <script src="game.js"></script>
+  <script src="thing.js"></script>
+  <script src="jquery.js"></script>
+  <script src="bootstrap.js"></script>
+  <script src="other-thing.js"></script>
+  <script src="something-else.js"></script>
+  <script src="stuff.js"></script>
+  <script src="ridiculous.js"></script>
+  <script src="ughhhhh.js"></script>
+</body>
+</html>
+```
 
 All of these JS files need to be loaded by your browser in a certain order, after the HTML is ready to go, or maybe before, depending on some details.   
 
-All of the CSS files need to be applied to your HTMLL, but not until the SASS compiler has done it's job.  
+All of the CSS files need to be applied to your HTML, but not until the SASS compiler has done it's job.  
 
 And don't forget about the images or static asset files - those need to be pulled form the CSS files or maybe from the HTML code and stuck in their appropriate places relative to where the browser will render them.  
 
@@ -28,15 +50,13 @@ Some of the main buzz words of you may have heard tossed around include Gulp, Gr
 #### So What is Webpack?
 Webpack is a node feature that digs through your asset files, finds any dependencies, and spits out a single JS file that is ready for production.
 
-??? ASSHATE PIPELINE REFERENCE
-
 What sets it apart is that it isn't limited to only handling your JavaScript files, it thinks of everything else like a module as well. With Webpack you have access to "Loaders" which pre-process your assets (like Fonts, SASS, Images, CSS, SVGs etc) and output exactly what your browser needs to know in the smallest package possible.
 
 It also has some really cool features like `webpack-dev-server` which executes Webpack whenever you refresh your browser, or a thing called `hot-module-replacement` which tells your project to keep an eye on any changes, automatically refreshing your browser whenever it detects action.
 
 Big picture, Webpack finds the starter file you've told it to use and crawls through the tree of dependencies in the appropriate order keeping track of dependencies. It then minifies, optimizes, and loads anything it needs to make the browser happy.
 
-##### Webpack In Code
+#### Webpack In Code
 
 So what does Webpack configuration look like?
 
@@ -48,7 +68,7 @@ module.exports = {
     main: "./index.js",
   },
   output: {
-    filename: "index.bundle.js"
+    filename: "main.bundle.js"
   },
   module: {
     loaders: [
@@ -94,6 +114,8 @@ We'll need to install some tools both locally and globally so we have access to 
 `npm install -g webpack webpack-dev-server mocha`
 
 This will allow us to type `webpack`, `webpack-dev-server`, and `mocha` directly in our terminal whenever we need access to them.
+
+(*PROTIP: To see what modules you have globally installed on your machine, type `npm list -g --depth=0` at any time in your terminal*)
 
 #### Start A Project and Setup Webpack
 
@@ -440,7 +462,7 @@ Code Splitting
 
 `npm init`
 
-You'll be guided through the `package.json` setup wizard. Fill in the prompts as you see fit, or hit `enter` to choose the default. Keep in mind these settings can all be changed later directly in the `package.json` file (and they will be).
+You'll be guided through the `package.json` setup wizard. Fill in the prompts as you see fit, or hit `enter` to choose the default. (You can also type `npm init --yes` and it will choose all defaults for you). Keep in mind these settings can all be changed later directly in the `package.json` file (and they will be).
 
 Finally, install the dependencies we know we need locally. These will be explained in a bit more detail later.
 
@@ -485,6 +507,8 @@ README.md
 Now we're ready to write some code, but we need to give our project a place to output our `.js` files, in both our application and test suite, respectively.
 
 `touch index.html test.html`
+
+Copy this code into your index.html file:
 
 ```
 <!-- index.html -->
@@ -578,7 +602,7 @@ Even though we only told it to look into `index.js`, it's running through all of
 
 Having to type the Webpack commands every time you want to run your app is a pain in the butt. We can write a configuration file that will run every time we spin up our browser and do all of the things for us.
 
-First lets make a quick change to our `html` files. Since we have both a main production environment and a testing environment, lets specify how webpack will output our files accordingly.
+First lets make a quick change to our `html` files. Since we have both a main production environment and a testing environment, lets specify how Webpack will output our files accordingly.
 
 In `index.html` change the script tag to be `<script src="main.bundle.js"></script>`.
 
@@ -605,11 +629,16 @@ module.exports = {
 }
 ```
 
-Let's take a second to talk about what all of this is. We're telling Webpack that we want two separate bundles from different `entry` points. One for our `main` application, and one for our `test` suite (which is why we also needed to change how each of our html files were looking for their appropriately bundled javascript).  
+Let's take a second to talk about what all of this is. We're telling Webpack that we want two separate bundles from different `entry` points. One for our `main` application, and one for our `test` suite (which is why we also needed to change how each of our html files were looking for their appropriately bundled JavaScript).  
 
 The output will then determine whether it started form the main or test entry point, and output the filename accordingly.
 
-The way things are now, we still need to tell Webpack to run using the command `webpack` and then open our `index.html` file. Not a HUGE deal, but still kind of a waste of time.
+The way things are now, we still need to tell Webpack to run using the command `webpack` and then open our `index.html` file. Try it:
+
+`webpack`  
+`open index.html`  
+
+Not a HUGE deal, but still kind of a waste of time.
 
 Luckily, there's a sweet deal called `webpack-dev-server` that we mentioned earlier. This will boot up a development server and run our configuration file and reload our changes anytime we refresh our browser. Try it out!
 
@@ -619,8 +648,6 @@ Then visit `http://localhost:8080`
 >>>>>>> master
 
 Make a change to your alert.js file and refresh your browser.
-
-HO??? T MODULE RELOADING
 
 #### Writing Tests
 
@@ -636,9 +663,9 @@ describe('our test bundle', function () {
   })
 ```
 
-Visit `http://localhost:8080/test.html`  
+Visit `http://localhost:8080/test.html` (alternatively you can type `mocha` into your terminal, although keep in mind this command will not be accurate if running any tests on the DOM itself.)
 
-Note that just like in your `lib/index.js` file, you can require other test files within the entry point `test/index.js` file and Webpack will bundle for you. Simply use `require('./other-test-file')` like you would in any other context.  This is important since keeping test files simple and elegant is crucial to writing maintanable code.
+Also note that just like in your `lib/index.js` file, you can require other test files within the entry point `test/index.js` file and Webpack will bundle for you. Simply use `require('./other-test-file')` like you would in any other context.  This is important since keeping test files simple and elegant is crucial to writing maintainable code.
 
 
 #### A few changes to package.json
@@ -648,14 +675,15 @@ Note that just like in your `lib/index.js` file, you can require other test file
 // package.json
 ...
 "scripts": {
-  "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
-  "build": "./node_modules/webpack/bin/webpack.js",
-  "test": "./node_modules/mocha/bin/mocha"
+  "start": "webpack-dev-server --hot --inline",
+  "build": "webpack",
+  "test": "mocha"
 },
 ...
 ```
-This lets us use the commands `npm start` to fire up webpack-dev-server, `npm build` to package everything for production, and `npm test` to execute our testing suite.
+This lets us use the commands `npm start` to fire up webpack-dev-server, `npm build` to package everything for production, and `npm test` to execute our testing suite.  
 
+The `--hot --inline` flags tell npm to watch for any changes and reload automatically so we can stop typing stuff into our temrinal.  
 
 #### Back to Loaders
 
@@ -756,7 +784,7 @@ module.exports = {
 
 Note that we exclude `node_modules` here. We want Webpack to process all of OUR `.js` files, but *not* the ones we didn't write ourselves.
 
-As an added bonus, we can tell Webpack to figure out file extensions for us. Throw this line at the end of your config file:
+As an added bonus, we can tell Webpack to figure out file extensions for us. If you haven't already, make sure to add this at the end of your config file:
 
 ```
 resolve: {
@@ -764,22 +792,17 @@ resolve: {
 }
 ```
 
-### Resources
+This allows us to be generic when requiring files. We can say `require('./styles')` instead of `require('./styles.scss')` because the `.scss` extension is part of the list Webpack is looking for.
+
+Beyond this basic Webpack configuration, there are countless ways to use Webpack to your advantage. For further reading some of the additional tricks for later use include:  
+[Tree Shaking](https://medium.com/modus-create-front-end-development/webpack-2-tree-shaking-configuration-9f1de90f3233#.rlpftvy03): Letting Webpack scan your code for anything unused or superfluous before it packages everything up for production.
+[Code Splitting](https://webpack.github.io/docs/code-splitting.html): Loading only the code needed when you need it, not your entire app.
+[Chunks](http://survivejs.com/webpack/advanced-techniques/understanding-chunks/): Sections of code that are organized to maximize performance. (ie: Test chunks vs Production chunks, we don't necessarily need to run the test chunks every time we load our app in the browser)
+
+### Additional Resources
+[Webpack Documentation](https://webpack.github.io/docs/)
 [Awesome Webpack Blog Post](http://code.tutsplus.com/series/introduction-to-webpack--cms-983)
 [Comparing Browserify/Grunt/Gulp/Webpack](https://npmcompare.com/compare/browserify,grunt,gulp,webpack)
+[Another Webpack Tutorial](http://survivejs.com/webpack/developing-with-webpack/getting-started/)
+
 ___
-
-FOLLOW UP:
-Why the bangs in config stuff?
-Why wont webpack work if I don't install it again globally?
-Tree Shaking/Code Splitting/Chunking Resources for Deeper Dive
-Resolve Extensions?
-
-Next Steps:
-
-Images
-PreLoaders
-PlugIns
-Tree Shaking
-Chunking
-Code Splitting
