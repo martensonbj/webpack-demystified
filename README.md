@@ -39,7 +39,7 @@ Let's say you're building a game in JavaScript and you're new to this whole codi
 
 All of these JS files need to be loaded by your browser in a certain order, after the HTML is ready to go, or maybe before, depending on some details.   
 
-All of the CSS files need to be applied to your HTMLL, but not until the SASS compiler has done it's job.  
+All of the CSS files need to be applied to your HTML, but not until the SASS compiler has done it's job.  
 
 And don't forget about the images or static asset files - those need to be pulled form the CSS files or maybe from the HTML code and stuck in their appropriate places relative to where the browser will render them.  
 
