@@ -56,7 +56,7 @@ It also has some really cool features like `webpack-dev-server` which executes W
 
 Big picture, Webpack finds the starter file you've told it to use and crawls through the tree of dependencies in the appropriate order keeping track of dependencies. It then minifies, optimizes, and loads anything it needs to make the browser happy.
 
-##### Webpack In Code
+#### Webpack In Code
 
 So what does Webpack configuration look like?
 
@@ -68,7 +68,7 @@ module.exports = {
     main: "./index.js",
   },
   output: {
-    filename: "index.bundle.js"
+    filename: "main.bundle.js"
   },
   module: {
     loaders: [
