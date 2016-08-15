@@ -132,7 +132,7 @@ You'll be guided through the `package.json` setup wizard. Fill in the prompts as
 
 Finally, install the dependencies we know we need locally. These will be explained in a bit more detail later.
 
-`npm install --save-dev webpack webpackdev-server mocha mocha-loader chai`
+`npm install --save-dev webpack webpack-dev-server mocha mocha-loader chai`
 
 Before we push to github, we need to make sure we have our `.gitignore` file ready to go. Github doesn't need a boat load of node_modules. Luckily, Node hooks us up with a default file that we can pull down with `curl`.
 
@@ -197,9 +197,9 @@ Notice the single `<script>` tag located before the closing `</body>` tag. This 
 
 Next let's set up our `test.html` file.
 
-```
 <!-- test.html -->
 
+```
 <!DOCTYPE html>
 <html>
 <head>
@@ -220,9 +220,8 @@ Make a new file in your `lib` directory called `alert.js` and export a simple al
 
 `touch lib/alert.js`
 
+alert.js*
 ```
-// alert.js
-
 module.exports = () => {
   alert('ITS A TRAP!!!!!!!!!')
 }
@@ -230,9 +229,8 @@ module.exports = () => {
 
 Then require said file and call the function in our entry `index.js` file.
 
+*index.js*
 ```
-// index.js
-
 var newAlert = require('./alert')
 newAlert();
 ```
@@ -460,8 +458,8 @@ resolve: {
 This allows us to be generic when requiring files. We can say `require('./styles')` instead of `require('./styles.scss')` because the `.scss` extension is part of the list Webpack is looking for.
 
 Beyond this basic Webpack configuration, there are countless ways to use Webpack to your advantage. For further reading some of the additional tricks for later use include:  
-[Tree Shaking](https://medium.com/modus-create-front-end-development/webpack-2-tree-shaking-configuration-9f1de90f3233#.rlpftvy03): Letting Webpack scan your code for anything unused or superfluous before it packages everything up for production.
-[Code Splitting](https://webpack.github.io/docs/code-splitting.html): Loading only the code needed when you need it, not your entire app.
+[Tree Shaking](https://medium.com/modus-create-front-end-development/webpack-2-tree-shaking-configuration-9f1de90f3233#.rlpftvy03): Letting Webpack scan your code for anything unused or superfluous before it packages everything up for production.  
+[Code Splitting](https://webpack.github.io/docs/code-splitting.html): Loading only the code needed when you need it, not your entire app.  
 [Chunks](http://survivejs.com/webpack/advanced-techniques/understanding-chunks/): Sections of code that are organized to maximize performance. (ie: Test chunks vs Production chunks, we don't necessarily need to run the test chunks every time we load our app in the browser)
 
 ### Additional Resources
