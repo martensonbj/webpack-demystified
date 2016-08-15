@@ -463,9 +463,9 @@ Beyond this basic Webpack configuration, there are countless ways to use Webpack
 [Chunks](http://survivejs.com/webpack/advanced-techniques/understanding-chunks/): Sections of code that are organized to maximize performance. (ie: Test chunks vs Production chunks, we don't necessarily need to run the test chunks every time we load our app in the browser)
 
 ### Additional Resources
-[Webpack Documentation](https://webpack.github.io/docs/)
-[Awesome Webpack Blog Post](http://code.tutsplus.com/series/introduction-to-webpack--cms-983)
-[Comparing Browserify/Grunt/Gulp/Webpack](https://npmcompare.com/compare/browserify,grunt,gulp,webpack)
-[Another Webpack Tutorial](http://survivejs.com/webpack/developing-with-webpack/getting-started/)
+[Webpack Documentation](https://webpack.github.io/docs/)  
+[Awesome Webpack Blog Post](http://code.tutsplus.com/series/introduction-to-webpack--cms-983)  
+[Comparing Browserify/Grunt/Gulp/Webpack](https://npmcompare.com/compare/browserify,grunt,gulp,webpack)  
+[Another Webpack Tutorial](http://survivejs.com/webpack/developing-with-webpack/getting-started/)  
 
 ___
