@@ -3,7 +3,6 @@
 ### Game Plan:
   - Part 1:
     - Understand what Webpack is, and why it is useful
-    - Get an overview of Loaders and Plugins
   - Part 2:
     - Build a basic Webpack file from scratch
   - Part 3:
@@ -82,7 +81,7 @@ This chunk of code tells Webpack to start at the `entry` point and create a `mai
 
 #### What about the `module: { loaders: ...}` part?
 
-A loader is a per-file processor that deals with individual file types for you in the same way it handles `.js` files. Essencially Webpack thinks of everything in your project like a JavaScript module.
+A loader is a per-file processor that deals with individual file types for you in the same way it handles `.js` files. Essentially Webpack thinks of everything in your project like a JavaScript module.
 
 This means that you can tell Webpack to go find any SASS files and turn them into CSS (then also concatenate, minify, and bundle up for production). Or go find any image file and compress it before pushing it up to the browser. Or compile the CoffeeScript that you blacked out while writing into JS before production. And so on.
 
